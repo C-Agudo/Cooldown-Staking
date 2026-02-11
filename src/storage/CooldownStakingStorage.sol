@@ -2,11 +2,12 @@
 
 pragma solidity 0.8.33;
 
+import {IERC20} from "../../lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
+
 /// @title CooldownStakingStorage
 /// @notice Cononical storage layout for the Cooldown Staking protocol
 /// @dev This contract defines the protocol state and invariants.
-
-abstract contract CooldownStakinStorage {
+abstract contract CooldownStakingStorage {
     // STRUCTS
     /// @notice Represent a staking position in the protocol
     /// @dev A position is considered:
@@ -20,7 +21,7 @@ abstract contract CooldownStakinStorage {
 
     // STORAGE
     /// @notice ERC20 token used for staking
-    address internal immutable STAKIN_TOKEN;
+    address internal immutable STAKING_TOKEN;
     /// @notice ERC20 token used for rewards;
     address public REWARD_TOKEN;
     /// @notice Global cooldown duration required before exit

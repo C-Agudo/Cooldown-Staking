@@ -10,11 +10,16 @@ import {SafeERC20} from "../../lib/openzeppelin-contracts/contracts/token/ERC20/
 /// @title CooldownStakingCore
 /// @notice Core logic for the CooldownStaking protocol
 /// @dev Enforces rules defined in CooldownStakingStorage
-contract CooldownStakingCore is CooldownStakinStorage, ICooldownStaking {
+contract CooldownStakingCore is CooldownStakingStorage, ICooldownStaking {
     using SafeERC20 for IERC20;
 
-    constructor(address stakingToken_, address rewardToken_, uint256 cooldownPeriod_, uint256 rewardRate_) {
-        STAKIN_TOKEN = stakingToken_;
+    constructor(
+        address stakingToken_,
+        address rewardToken_,
+        uint256 cooldownPeriod_,
+        uint256 rewardRate_
+    ) {
+        STAKING_TOKEN = stakingToken_;
         REWARD_TOKEN = rewardToken_;
         COOLDOWN_PERIOD = cooldownPeriod_;
         REWARD_RATE = rewardRate_;
@@ -32,7 +37,7 @@ contract CooldownStakingCore is CooldownStakinStorage, ICooldownStaking {
         position.stakeTimestamp = block.timestamp;
         position.exitRequestTimestamp = 0;
 
-        IERC20(STAKIN_TOKEN).safeTransferFrom(
+        IERC20(STAKING_TOKEN).safeTransferFrom(
             msg.sender,
             address(this),
             amount_
@@ -68,7 +73,7 @@ contract CooldownStakingCore is CooldownStakinStorage, ICooldownStaking {
         position.amount = 0;
         position.stakeTimestamp = 0;
         position.exitRequestTimestamp = 0;
-        IERC20(STAKIN_TOKEN).safeTransfer(msg.sender, amountToReturn);
+        IERC20(STAKING_TOKEN).safeTransfer(msg.sender, amountToReturn);
     }
 
     /// @notice Returns the global cooldown period
@@ -92,24 +97,28 @@ contract CooldownStakingCore is CooldownStakinStorage, ICooldownStaking {
         require(elapsed > 0, "Nothing to claim");
 
         // reward = amount * elapsed * REWARD_RATE / 1e18
-        uint256 reward = pos.amount * elapsed * REWARD_RATE / 1e18;
+        uint256 reward = (pos.amount * elapsed * REWARD_RATE) / 1e18;
 
         // update stake timestamp to avoid double counting
         pos.stakeTimestamp = block.timestamp;
 
         // transfer rewards
-        REWARD_TOKEN.safeTransfer(msg.sender, reward);
+        IERC20(REWARD_TOKEN).safeTransfer(msg.sender, reward);
     }
 
     /// @notice Returns the staked amount of a participant
     /// @param user Participant address
-    function stakedAmount(address user) external view override returns (uint256) {
+    function stakedAmount(
+        address user
+    ) external view override returns (uint256) {
         return _positions[user].amount;
     }
 
     /// @notice Returns the exit request timestamp of a participant
     /// @param user Participant address
-    function exitRequestTimestamp(address user) external view override returns (uint256) {
+    function exitRequestTimestamp(
+        address user
+    ) external view override returns (uint256) {
         return _positions[user].exitRequestTimestamp;
-    }}
+    }
 }
