@@ -28,6 +28,7 @@ contract CooldownStakingCore is CooldownStakingStorage, ICooldownStaking {
     /// @notice Stake a fixed amount into the protocol
     /// @param amount_ Amount of tokens to stake
     function stake(uint256 amount_) external {
+        require(amount_ > 0, "Zero amount");
         StakePosition storage position = _positions[msg.sender];
 
         // invariant: only one active position per participant
