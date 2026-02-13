@@ -28,8 +28,12 @@ contract CooldownStakingCore is CooldownStakingStorage, ICooldownStaking {
     /// @notice Stake a fixed amount into the protocol
     /// @param amount_ Amount of tokens to stake
     function stake(uint256 amount_) external {
+        _stake(msg.sender, amount_);
+    }
+
+    function _stake(address user_, uint256 amount_) public {
         require(amount_ > 0, "Zero amount");
-        StakePosition storage position = _positions[msg.sender];
+        StakePosition storage position = _positions[user_];
 
         // invariant: only one active position per participant
         require(position.amount == 0, "Already staking");
@@ -39,7 +43,7 @@ contract CooldownStakingCore is CooldownStakingStorage, ICooldownStaking {
         position.exitRequestTimestamp = 0;
 
         IERC20(STAKING_TOKEN).safeTransferFrom(
-            msg.sender,
+            user_,
             address(this),
             amount_
         );
@@ -47,7 +51,11 @@ contract CooldownStakingCore is CooldownStakingStorage, ICooldownStaking {
 
     /// @notice Request to exit the protocol (starts cooldown)
     function requestExit() external {
-        StakePosition storage position = _positions[msg.sender];
+        _requestExit(msg.sender);
+    }
+
+    function _requestExit(address user_) public {
+        StakePosition storage position = _positions[user_];
 
         // invariant: must have active stake
         require(position.amount > 0, "No active stake");
@@ -59,7 +67,11 @@ contract CooldownStakingCore is CooldownStakingStorage, ICooldownStaking {
 
     /// @notice Finalize exit after cooldown period
     function finalizeExit() external {
-        StakePosition storage position = _positions[msg.sender];
+        _finalizeExit(msg.sender);
+    }
+
+    function _finalizeExit(address user_) public {
+        StakePosition storage position = _positions[user_];
 
         require(position.amount > 0, "No active stake");
         require(position.exitRequestTimestamp > 0, "Exit not requested");
@@ -74,7 +86,7 @@ contract CooldownStakingCore is CooldownStakingStorage, ICooldownStaking {
         position.amount = 0;
         position.stakeTimestamp = 0;
         position.exitRequestTimestamp = 0;
-        IERC20(STAKING_TOKEN).safeTransfer(msg.sender, amountToReturn);
+        IERC20(STAKING_TOKEN).safeTransfer(user_, amountToReturn);
     }
 
     /// @notice Returns the global cooldown period
@@ -91,7 +103,11 @@ contract CooldownStakingCore is CooldownStakingStorage, ICooldownStaking {
 
     /// @notice Claim accrued rewards
     function claimRewards() external override {
-        StakePosition storage pos = _positions[msg.sender];
+        _claimRewards(msg.sender);
+    }
+
+    function _claimRewards(address user_) public {
+        StakePosition storage pos = _positions[user_];
         require(pos.amount > 0, "No active stake");
 
         uint256 elapsed = block.timestamp - pos.stakeTimestamp;
@@ -104,7 +120,7 @@ contract CooldownStakingCore is CooldownStakingStorage, ICooldownStaking {
         pos.stakeTimestamp = block.timestamp;
 
         // transfer rewards
-        IERC20(REWARD_TOKEN).safeTransfer(msg.sender, reward);
+        IERC20(REWARD_TOKEN).safeTransfer(user_, reward);
     }
 
     /// @notice Returns the staked amount of a participant

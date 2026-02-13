@@ -1,33 +1,53 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.33;
 
-/// @title Mock storage for CooldownStaking
-/// @notice Implements minimal storage required to test Core logic
-contract MockCooldownStakingStorage {
-    struct StakePosition {
-        uint256 amount;
-        uint256 stakeTimestamp;
-        uint256 exitRequestTimestamp;
-    }
+import "../src/storage/CooldownStakingStorage.sol";
 
-    mapping(address => StakePosition) internal _positions;
-
-    function stakedAmount(address user) external view returns (uint256) {
-        return _positions[user].amount;
-    }
-
-    function exitRequestTimestamp(
-        address user
-    ) external view returns (uint256) {
-        return _positions[user].exitRequestTimestamp;
+contract MockCooldownStakingStorage is CooldownStakingStorage {
+    constructor(
+        address stakingToken_,
+        address rewardToken_,
+        uint256 cooldown_,
+        uint256 rewardRate_
+    ) {
+        STAKING_TOKEN = stakingToken_;
+        REWARD_TOKEN = rewardToken_;
+        COOLDOWN_PERIOD = cooldown_;
+        REWARD_RATE = rewardRate_;
     }
 
     function setPosition(
         address user,
         uint256 amount,
-        uint256 stakeTime,
-        uint256 exitTime
+        uint256 stakeTimestamp,
+        uint256 exitRequestTimestamp
     ) external {
-        _positions[user] = StakePosition(amount, stakeTime, exitTime);
+        _positions[user] = StakePosition(
+            amount,
+            stakeTimestamp,
+            exitRequestTimestamp
+        );
+    }
+
+    function getPosition(
+        address user
+    ) external view returns (StakePosition memory) {
+        return _positions[user];
+    }
+
+    function getStakingToken() external view returns (address) {
+        return STAKING_TOKEN;
+    }
+
+    function getRewardToken() external view returns (address) {
+        return REWARD_TOKEN;
+    }
+
+    function getCooldownPeriod() external view returns (uint256) {
+        return COOLDOWN_PERIOD;
+    }
+
+    function getRewardRate() external view returns (uint256) {
+        return REWARD_RATE;
     }
 }

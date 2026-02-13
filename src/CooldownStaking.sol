@@ -35,22 +35,22 @@ contract CooldownStaking is ICooldownStaking {
     /// @notice Stake tokens
     /// @param amount Amount to stake
     function stake(uint256 amount) external override {
-        core.stake(amount);
+        core._stake(msg.sender, amount);
     }
 
     /// @notice Request exit from staking
     function requestExit() external override {
-        core.requestExit();
+        core._requestExit(msg.sender);
     }
 
     /// @notice Finalize exit after cooldown
     function finalizeExit() external override {
-        core.finalizeExit();
+        core._finalizeExit(msg.sender);
     }
 
     /// @notice Claim rewards accumulated
     function claimRewards() external override {
-        core.claimRewards();
+        core._claimRewards(msg.sender);
     }
 
     /// @notice Expose the global cooldown

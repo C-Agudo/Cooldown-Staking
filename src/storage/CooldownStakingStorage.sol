@@ -21,11 +21,11 @@ abstract contract CooldownStakingStorage {
 
     // STORAGE
     /// @notice ERC20 token used for staking
-    address internal immutable STAKING_TOKEN;
+    address internal STAKING_TOKEN;
     /// @notice ERC20 token used for rewards;
     address public REWARD_TOKEN;
     /// @notice Global cooldown duration required before exit
-    uint256 internal immutable COOLDOWN_PERIOD;
+    uint256 internal COOLDOWN_PERIOD;
     /// @notice Reward rate per second per staked token
     uint256 public REWARD_RATE;
 

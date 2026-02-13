@@ -16,11 +16,10 @@ contract CooldownCoordinatorTest is Test {
     }
 
     function testInitialCooldown() public {
-        uint256 cooldown = coordinator.globalCooldown();
-        assertEq(cooldown, initialCooldown);
+        assertEq(coordinator.globalCooldown(), initialCooldown);
     }
 
-    function testSetGlobalCooldownUpdatesValue() public {
+    function testSetGlobalCooldown() public {
         uint256 newCooldown = 2 days;
 
         vm.expectEmit(true, false, false, true);
@@ -31,28 +30,21 @@ contract CooldownCoordinatorTest is Test {
         assertEq(coordinator.globalCooldown(), newCooldown);
     }
 
-    function testEarliestExitReturnsCorrectTimestamp() public {
+    function testEarliestExit() public {
         uint256 requestTs = block.timestamp;
-        uint256 expected = requestTs + initialCooldown;
-
-        uint256 result = coordinator.earliestExit(requestTs);
-        assertEq(result, expected);
+        assertEq(
+            coordinator.earliestExit(requestTs),
+            requestTs + initialCooldown
+        );
     }
 
-    function testIsCooldownOverFalseBeforeTime() public {
+    function testIsCooldownOver() public {
         uint256 requestTs = block.timestamp;
 
-        bool ready = coordinator.isCooldownOver(requestTs);
-        assertFalse(ready);
-    }
+        assertFalse(coordinator.isCooldownOver(requestTs));
 
-    function testIsCooldownOverTrueAfterTime() public {
-        uint256 requestTs = block.timestamp;
-
-        // Warp past cooldown
         vm.warp(block.timestamp + initialCooldown + 1);
 
-        bool ready = coordinator.isCooldownOver(requestTs);
-        assertTrue(ready);
+        assertTrue(coordinator.isCooldownOver(requestTs));
     }
 }
