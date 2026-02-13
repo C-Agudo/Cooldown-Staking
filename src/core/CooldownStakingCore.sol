@@ -13,12 +13,7 @@ import {SafeERC20} from "../../lib/openzeppelin-contracts/contracts/token/ERC20/
 contract CooldownStakingCore is CooldownStakingStorage, ICooldownStaking {
     using SafeERC20 for IERC20;
 
-    constructor(
-        address stakingToken_,
-        address rewardToken_,
-        uint256 cooldownPeriod_,
-        uint256 rewardRate_
-    ) {
+    constructor(address stakingToken_, address rewardToken_, uint256 cooldownPeriod_, uint256 rewardRate_) {
         STAKING_TOKEN = stakingToken_;
         REWARD_TOKEN = rewardToken_;
         COOLDOWN_PERIOD = cooldownPeriod_;
@@ -42,11 +37,7 @@ contract CooldownStakingCore is CooldownStakingStorage, ICooldownStaking {
         position.stakeTimestamp = block.timestamp;
         position.exitRequestTimestamp = 0;
 
-        IERC20(STAKING_TOKEN).safeTransferFrom(
-            user_,
-            address(this),
-            amount_
-        );
+        IERC20(STAKING_TOKEN).safeTransferFrom(user_, address(this), amount_);
     }
 
     /// @notice Request to exit the protocol (starts cooldown)
@@ -75,10 +66,7 @@ contract CooldownStakingCore is CooldownStakingStorage, ICooldownStaking {
 
         require(position.amount > 0, "No active stake");
         require(position.exitRequestTimestamp > 0, "Exit not requested");
-        require(
-            block.timestamp >= position.exitRequestTimestamp + COOLDOWN_PERIOD,
-            "Cooldown not over"
-        );
+        require(block.timestamp >= position.exitRequestTimestamp + COOLDOWN_PERIOD, "Cooldown not over");
 
         uint256 amountToReturn = position.amount;
 
@@ -95,9 +83,7 @@ contract CooldownStakingCore is CooldownStakingStorage, ICooldownStaking {
     }
 
     /// @notice Returns the current staking position of a participant
-    function positionOf(
-        address user_
-    ) external view returns (StakePosition memory) {
+    function positionOf(address user_) external view returns (StakePosition memory) {
         return _positions[user_];
     }
 
@@ -125,17 +111,13 @@ contract CooldownStakingCore is CooldownStakingStorage, ICooldownStaking {
 
     /// @notice Returns the staked amount of a participant
     /// @param user Participant address
-    function stakedAmount(
-        address user
-    ) external view override returns (uint256) {
+    function stakedAmount(address user) external view override returns (uint256) {
         return _positions[user].amount;
     }
 
     /// @notice Returns the exit request timestamp of a participant
     /// @param user Participant address
-    function exitRequestTimestamp(
-        address user
-    ) external view override returns (uint256) {
+    function exitRequestTimestamp(address user) external view override returns (uint256) {
         return _positions[user].exitRequestTimestamp;
     }
 }

@@ -32,10 +32,7 @@ contract CooldownCoordinatorTest is Test {
 
     function testEarliestExit() public {
         uint256 requestTs = block.timestamp;
-        assertEq(
-            coordinator.earliestExit(requestTs),
-            requestTs + initialCooldown
-        );
+        assertEq(coordinator.earliestExit(requestTs), requestTs + initialCooldown);
     }
 
     function testIsCooldownOver() public {

@@ -27,21 +27,11 @@ contract CooldownStakingTest is Test {
         stakingToken = new MockERC20("Stake", "STK");
         rewardToken = new MockERC20("Reward", "RWD");
 
-        storageContract = new MockCooldownStakingStorage(
-            address(stakingToken),
-            address(rewardToken),
-            100,
-            10
-        );
+        storageContract = new MockCooldownStakingStorage(address(stakingToken), address(rewardToken), 100, 10);
 
         coordinator = new CooldownCoordinator(COOLDOWN);
 
-        core = new CooldownStakingCore(
-            address(stakingToken),
-            address(rewardToken),
-            COOLDOWN,
-            REWARD_RATE
-        );
+        core = new CooldownStakingCore(address(stakingToken), address(rewardToken), COOLDOWN, REWARD_RATE);
 
         staking = new CooldownStaking(core, storageContract, coordinator);
 

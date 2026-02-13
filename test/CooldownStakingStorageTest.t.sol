@@ -14,12 +14,7 @@ contract CooldownStakingStorageTest is Test {
         stakingToken = new MockERC20("Stake Token", "STK");
         rewardToken = new MockERC20("Reward Token", "RWD");
 
-        storageContract = new MockCooldownStakingStorage(
-            address(stakingToken),
-            address(rewardToken),
-            1 days,
-            1e18
-        );
+        storageContract = new MockCooldownStakingStorage(address(stakingToken), address(rewardToken), 1 days, 1e18);
     }
 
     function testGetters() public {
@@ -34,8 +29,7 @@ contract CooldownStakingStorageTest is Test {
 
         storageContract.setPosition(user, 100 ether, 10, 0);
 
-        CooldownStakingStorage.StakePosition memory pos = storageContract
-            .getPosition(user);
+        CooldownStakingStorage.StakePosition memory pos = storageContract.getPosition(user);
 
         assertEq(pos.amount, 100 ether);
         assertEq(pos.stakeTimestamp, 10);
@@ -49,10 +43,8 @@ contract CooldownStakingStorageTest is Test {
         storageContract.setPosition(user1, 50 ether, 1, 0);
         storageContract.setPosition(user2, 75 ether, 2, 5);
 
-        CooldownStakingStorage.StakePosition memory pos1 = storageContract
-            .getPosition(user1);
-        CooldownStakingStorage.StakePosition memory pos2 = storageContract
-            .getPosition(user2);
+        CooldownStakingStorage.StakePosition memory pos1 = storageContract.getPosition(user1);
+        CooldownStakingStorage.StakePosition memory pos2 = storageContract.getPosition(user2);
 
         assertEq(pos1.amount, 50 ether);
         assertEq(pos2.amount, 75 ether);

@@ -27,18 +27,14 @@ contract CooldownCoordinator {
     /// @notice Returns the earliest timestamp a user can finalize exit
     /// @param requestTimestamp Timestamp when exit was requested
     /// @return earliestExitTimestamp Minimum timestamp allowed for exit
-    function earliestExit(
-        uint256 requestTimestamp
-    ) external view returns (uint256) {
+    function earliestExit(uint256 requestTimestamp) external view returns (uint256) {
         return requestTimestamp + globalCooldown;
     }
 
     /// @notice Checks if the cooldown period is over for a given request
     /// @param requestTimestamp Timestamp when exit was requested
     /// @return true if cooldown has finished, false otherwise
-    function isCooldownOver(
-        uint256 requestTimestamp
-    ) external view returns (bool) {
+    function isCooldownOver(uint256 requestTimestamp) external view returns (bool) {
         return block.timestamp >= requestTimestamp + globalCooldown;
     }
 }

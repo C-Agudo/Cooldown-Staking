@@ -22,11 +22,7 @@ contract CooldownStaking is ICooldownStaking {
     /// @param core_ Core logic contract
     /// @param storage_ Storage contract
     /// @param coordinator_ Coordinator contract
-    constructor(
-        CooldownStakingCore core_,
-        CooldownStakingStorage storage_,
-        CooldownCoordinator coordinator_
-    ) {
+    constructor(CooldownStakingCore core_, CooldownStakingStorage storage_, CooldownCoordinator coordinator_) {
         core = core_;
         storageContract = storage_;
         coordinator = coordinator_;

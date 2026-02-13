@@ -19,12 +19,7 @@ contract CooldownStakingCoreTest is Test {
         stakingToken = new MockERC20("StakeToken", "STK");
         rewardToken = new MockERC20("RewardToken", "RWD");
 
-        core = new CooldownStakingCore(
-            address(stakingToken),
-            address(rewardToken),
-            cooldownPeriod,
-            rewardRate
-        );
+        core = new CooldownStakingCore(address(stakingToken), address(rewardToken), cooldownPeriod, rewardRate);
 
         rewardToken.mint(address(core), 1_000_000 ether);
         stakingToken.mint(user, 1_000 ether);
